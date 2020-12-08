@@ -65,9 +65,10 @@ public class SnowflakeZookeeperHolder {
                 //存在根节点,先检查是否有属于自己的根节点
                 List<String> keys = curator.getChildren().forPath(PATH_FOREVER);
                 for (String key : keys) {
-                    String[] nodeKey = key.split("-");
-                    realNode.put(nodeKey[0], key);
-                    nodeMap.put(nodeKey[0], Integer.parseInt(nodeKey[1]));
+                    //String[] nodeKey = key.split("-");
+                    int index = key.lastIndexOf("-");
+                    realNode.put(key.substring(0, index), key);
+                    nodeMap.put(key.substring(0, index), Integer.parseInt(key.substring(index + 1)));
                 }
                 Integer workerid = nodeMap.get(listenAddress);
                 if (workerid != null) {
@@ -85,8 +86,9 @@ public class SnowflakeZookeeperHolder {
                     //表示新启动的节点,创建持久节点 ,不用check时间
                     String newNode = createNode(curator);
                     zk_AddressNode = newNode;
-                    String[] nodeKey = newNode.split("-");
-                    workerID = Integer.parseInt(nodeKey[1]);
+                    //String[] nodeKey = newNode.split("-");
+                    int index = newNode.lastIndexOf("-");
+                    workerID = Integer.parseInt(newNode.substring(index + 1));
                     doService(curator);
                     updateLocalWorkerID(workerID);
                     LOGGER.info("[New NODE]can not find node on forever node that endpoint ip-{} port-{} workid-{},create own node on forever node and start SUCCESS ", ip, port, workerID);
