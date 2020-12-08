@@ -14,6 +14,10 @@ import java.util.List;
 public class Utils {
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
+    public static String getStatefulPodName() {
+        return System.getenv("MY_POD");
+    }
+
     public static String getIp() {
         String ip;
         try {
