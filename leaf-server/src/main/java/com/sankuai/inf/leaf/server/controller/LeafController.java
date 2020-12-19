@@ -27,8 +27,9 @@ public class LeafController {
         return get(key, segmentService.getId(key));
     }
 
-    @RequestMapping(value = "/api/snowflake/get/{key}")
-    public String getSnowflakeId(@PathVariable("key") String key) {
+    @RequestMapping(value = "/api/snowflake/get")
+    public String getSnowflakeId() {
+        String key = "default";
         return get(key, snowflakeService.getId(key));
     }
 
