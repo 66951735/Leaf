@@ -32,4 +32,12 @@ public interface IDAllocMapper {
 
     @Select("SELECT biz_tag FROM leaf_alloc")
     List<String> getAllTags();
+
+    /**
+     * 增加一条LeafAlloc记录，segment模式用
+     *
+     * @param leafAlloc
+     */
+    @Insert("INSERT INTO leaf_alloc(biz_tag, max_id, step) values(#{key}, #{maxId}, #{step})")
+    void insertLeafAlloc(@Param("leafAlloc") LeafAlloc leafAlloc);
 }

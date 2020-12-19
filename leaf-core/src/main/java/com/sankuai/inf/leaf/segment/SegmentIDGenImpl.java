@@ -277,6 +277,10 @@ public class SegmentIDGenImpl implements IDGen {
         return dao.getAllLeafAllocs();
     }
 
+    public LeafAlloc insertLeafAlloc(LeafAlloc leafAlloc) {
+        return dao.insertLeafAlloc(leafAlloc);
+    }
+
     public Map<String, SegmentBuffer> getCache() {
         return cache;
     }

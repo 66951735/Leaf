@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -74,9 +71,9 @@ public class LeafMonitorController {
     /**
      * the output is like this:
      * {
-     *   "timestamp": "1567733700834(2019-09-06 09:35:00.834)",
-     *   "sequenceId": "3448",
-     *   "workerId": "39"
+     * "timestamp": "1567733700834(2019-09-06 09:35:00.834)",
+     * "sequenceId": "3448",
+     * "workerId": "39"
      * }
      */
     @RequestMapping(value = "decodeSnowflakeId")
@@ -101,4 +98,24 @@ public class LeafMonitorController {
         }
         return map;
     }
+
+    @GetMapping("/addLeafAlloc")
+    @ResponseBody
+    public Map<String, String> addLeafAlloc(@RequestParam("bizTag") String key, @RequestParam("step") int step, @RequestParam(value = "start", required = false) Long maxId) {
+        LeafAlloc leafAlloc = new LeafAlloc();
+        leafAlloc.setKey(key);
+        leafAlloc.setStep(step);
+        leafAlloc.setMaxId((maxId == null || maxId <= 0L) ? 1L : maxId);
+        SegmentIDGenImpl segmentIDGen = segmentService.getIdGen();
+        leafAlloc = segmentIDGen.insertLeafAlloc(leafAlloc);
+        Map<String, String> result = new HashMap<>(1);
+        if (leafAlloc == null) {
+            result.put("errorMsg", "add leafAlloc error");
+            return result;
+        }
+        result.put("result", "success");
+        return result;
+    }
+
+
 }

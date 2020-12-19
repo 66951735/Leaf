@@ -10,11 +10,15 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 public class IDAllocDaoImpl implements IDAllocDao {
+
+    private Logger logger = LoggerFactory.getLogger(IDAllocDaoImpl.class);
 
     SqlSessionFactory sqlSessionFactory;
 
@@ -70,5 +74,24 @@ public class IDAllocDaoImpl implements IDAllocDao {
         } finally {
             sqlSession.close();
         }
+    }
+
+    @Override
+    public LeafAlloc insertLeafAlloc(LeafAlloc leafAlloc) {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            LeafAlloc result = sqlSession.selectOne("com.sankuai.inf.leaf.segment.dao.IDAllocMapper.getLeafAlloc", leafAlloc.getKey());
+            if (result == null) {
+                sqlSession.insert("com.sankuai.inf.leaf.segment.dao.IDAllocMapper.insertLeafAlloc", leafAlloc);
+                result = sqlSession.selectOne("com.sankuai.inf.leaf.segment.dao.IDAllocMapper.getLeafAlloc", leafAlloc.getKey());
+            }
+            sqlSession.commit();
+            return result;
+        } catch (Exception e) {
+            logger.error("insert leaf alloc record error", e);
+        } finally {
+            sqlSession.close();
+        }
+        return null;
     }
 }

@@ -9,4 +9,5 @@ public interface IDAllocDao {
      LeafAlloc updateMaxIdAndGetLeafAlloc(String tag);
      LeafAlloc updateMaxIdByCustomStepAndGetLeafAlloc(LeafAlloc leafAlloc);
      List<String> getAllTags();
+     LeafAlloc insertLeafAlloc(LeafAlloc leafAlloc);
 }
